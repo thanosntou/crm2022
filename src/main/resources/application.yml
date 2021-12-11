@@ -7,3 +7,11 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://auth-server:9000
+
+app:
+  java:
+    version: 17
+
+java:
+  runtime:
+    version: 17
