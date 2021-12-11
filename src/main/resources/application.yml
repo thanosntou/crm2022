@@ -1,17 +1,25 @@
 server:
-  port: 9000
+  port: ${PORT:8081}
+  servlet:
+    context-path: /
 
+# JPA - HIBERNATE
 spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://auth-server:9000
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
 
-app:
-  java:
-    version: 17
 
-java:
-  runtime:
-    version: 17
+  datasource:
+    url: jdbc:postgresql://localhost:5432/crm2022
+    username: crm_user
+    password: crm_pass
+    hikari:
+      maximum-pool-size: 10
