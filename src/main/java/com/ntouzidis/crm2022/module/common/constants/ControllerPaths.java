@@ -12,6 +12,10 @@ public final class ControllerPaths {
 
   public static final String USER_CONTROLLER_PATH = "/api/v1/user";
 
+  public static final String CONTACT_CONTROLLER_PATH = "/api/v1/contact";
+
+  public static final String COUNTRY_CONTROLLER_PATH = "/api/v1/country";
+
   private ControllerPaths() {
   }
 }
