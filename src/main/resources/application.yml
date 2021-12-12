@@ -18,8 +18,8 @@ spring:
 
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/crm2022
-    username: crm_user
-    password: crm_pass
+    url: 
+    username:
+    password:
     hikari:
       maximum-pool-size: 10
