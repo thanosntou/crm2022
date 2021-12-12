@@ -7,8 +7,6 @@ import com.ntouzidis.crm2022.module.common.pojo.Context;
 import com.ntouzidis.crm2022.module.user.entity.CustomUserDetails;
 import com.ntouzidis.crm2022.module.user.entity.User;
 import com.ntouzidis.crm2022.module.user.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +23,6 @@ import static org.springframework.http.ResponseEntity.ok;
     value = USER_CONTROLLER_PATH,
     produces = APPLICATION_JSON_VALUE
 )
-@Api(tags = "User API")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -33,7 +30,6 @@ public class UserController {
   private final UserService userService;
 
   @PostMapping
-  @ApiOperation(value = "Sign up as a Follower or Trader")
   public ResponseEntity<UserDTO> signUp(@RequestBody @Valid UserForm userForm) {
     User user = userService.signUp(userForm);
 
@@ -44,13 +40,11 @@ public class UserController {
   }
 
   @PutMapping("/pass")
-  @ApiOperation(value = "Change your password")
   public ResponseEntity<UserDTO> changePersonalPassword(@RequestBody @Valid UserPasswordForm userDTOPassForm) {
     return ok(toDTO(userService.changePassword(context.getUser(), userDTOPassForm), false));
   }
 
   @GetMapping("/authenticate")
-  @ApiOperation(value = "Authentication endpoint for reading User Details")
   public ResponseEntity<CustomUserDetails> authenticate() {
     return ok(context.getUserDetails());
   }
