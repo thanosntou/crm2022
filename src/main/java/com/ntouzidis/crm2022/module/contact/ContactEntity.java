@@ -1,10 +1,12 @@
 package com.ntouzidis.crm2022.module.contact;
 
 import com.ntouzidis.crm2022.module.common.enumeration.BusinessType;
-import lombok.*;
+import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Optional;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -37,10 +39,10 @@ public class ContactEntity implements Serializable {
   private String skype;
 
   @Column(name = "viber")
-  private String viber;
+  private Long viber;
 
   @Column(name = "whats_app")
-  private String whatsApp;
+  private Long whatsApp;
 
   @Column(name = "we_chat")
   private String weChat;
@@ -61,7 +63,7 @@ public class ContactEntity implements Serializable {
         this.company,
         this.name,
         this.surname,
-        Country.fromName(this.country),
+        StringUtils.isNotBlank(this.country) ? Country.fromName(this.country) : null,
         this.website,
         this.skype,
         this.viber,
@@ -78,7 +80,7 @@ public class ContactEntity implements Serializable {
     entity.name = contact.name();
     entity.surname = contact.surname();
     entity.website = contact.website();
-    entity.country = contact.country().name();
+    entity.country = Optional.ofNullable(contact.country()).map(Country::getName).orElse(null);
     entity.skype = contact.skype();
     entity.viber = contact.viber();
     entity.whatsApp = contact.whatsApp();

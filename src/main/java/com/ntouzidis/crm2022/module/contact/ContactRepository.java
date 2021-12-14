@@ -2,6 +2,7 @@ package com.ntouzidis.crm2022.module.contact;
 
 import com.ntouzidis.crm2022.module.common.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class ContactRepository {
     return contactJpaRepository.findById(id).map(ContactEntity::toDomain);
   }
 
-  public Contact saveNew(Contact contact) {
+  public Contact saveNew(@NonNull Contact contact) {
     return contactJpaRepository.save(ContactEntity.fromDomain(contact)).toDomain();
   }
 
