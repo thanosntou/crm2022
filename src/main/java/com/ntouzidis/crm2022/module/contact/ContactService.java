@@ -21,19 +21,6 @@ public class ContactService {
 
   private final ContactRepository contactRepository;
 
-  @Transactional(readOnly = true)
-  public List<Contact> getAll() {
-    return contactRepository.getAll();
-  }
-
-  @Transactional(readOnly = true)
-  public Contact getOne(Long id) {
-    return contactRepository
-        .findOne(id)
-        .orElseThrow(
-            () -> new NotFoundException(String.format("Contact with id [%d] not found", id)));
-  }
-
   @Transactional
   public Contact createOne(@NonNull ContactForm form) {
     return contactRepository.saveNew(Contact.create(form));
@@ -72,6 +59,24 @@ public class ContactService {
     contacts.forEach(contactRepository::saveNew);
 
     return contacts;
+  }
+
+  public void exportContacts() {
+
+
+  }
+
+  @Transactional(readOnly = true)
+  public List<Contact> getAll() {
+    return contactRepository.getAll();
+  }
+
+  @Transactional(readOnly = true)
+  public Contact getOne(Long id) {
+    return contactRepository
+        .findOne(id)
+        .orElseThrow(
+            () -> new NotFoundException(String.format("Contact with id [%d] not found", id)));
   }
 
   @Transactional
