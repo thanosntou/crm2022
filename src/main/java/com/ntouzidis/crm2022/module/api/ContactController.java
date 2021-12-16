@@ -6,10 +6,18 @@ import com.ntouzidis.crm2022.module.contact.ContactForm;
 import com.ntouzidis.crm2022.module.contact.ContactService;
 import com.ntouzidis.crm2022.module.contact.Country;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.*;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.ntouzidis.crm2022.module.common.constants.AuthorizationConstants.ADMIN_OR_ROOT;
@@ -19,6 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping(value = CONTACT_CONTROLLER_PATH, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
+@Slf4j
 public class ContactController {
 
   private final ContactService contactService;
@@ -26,7 +35,16 @@ public class ContactController {
   @PostMapping
   @PreAuthorize(ADMIN_OR_ROOT)
   public Contact createContact(@RequestBody @Valid ContactForm form) {
-    return contactService.create(form);
+    return contactService.createOne(form);
+  }
+
+  @PostMapping(
+      value = "/file")
+  @PreAuthorize(ADMIN_OR_ROOT)
+  public List<Contact> createContactsFromFile(
+      @RequestParam(name = "file") MultipartFile file,
+      @RequestParam(name = "id", required = false) Long id) {
+    return contactService.createMultiple(file);
   }
 
   @GetMapping
