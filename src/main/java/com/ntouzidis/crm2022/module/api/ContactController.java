@@ -11,6 +11,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,10 +51,21 @@ public class ContactController {
     return contactService.createMultiple(file);
   }
 
-  @GetMapping("/export")
+  @PostMapping("/export")
   @PreAuthorize(ADMIN_OR_ROOT)
   public void exportContacts() {
     contactService.exportContacts();
+  }
+
+  @GetMapping("/export")
+  @PreAuthorize(ADMIN_OR_ROOT)
+  public ResponseEntity<Resource> getXlsxFile() throws FileNotFoundException {
+    File uploadedFile = new File("temp.xlsx");
+    InputStreamResource resource = new InputStreamResource(new FileInputStream(uploadedFile));
+    return ResponseEntity.ok()
+        .contentLength(uploadedFile.length())
+        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+        .body(resource);
   }
 
   @GetMapping
