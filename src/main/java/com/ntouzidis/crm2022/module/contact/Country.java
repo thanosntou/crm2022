@@ -42,7 +42,7 @@ public class Country {
 
   public static Country fromName(String name) {
     return getSupportedCountries().stream()
-        .filter(c -> c.getName().equals(name))
+        .filter(c -> c.getName().equalsIgnoreCase(name))
         .findFirst()
         .orElseThrow(
             () ->

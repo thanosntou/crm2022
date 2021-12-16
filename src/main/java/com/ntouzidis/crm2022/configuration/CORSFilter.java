@@ -30,6 +30,7 @@ public class CORSFilter implements Filter {
             "authorization,"+
             "Content-Type,"+
             "Authorization,"+
+            "Ignore,"+
             "credential,"+
             "X-XSRF-TOKEN,"+
             "X-Forwarded-For,"+

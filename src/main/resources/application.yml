@@ -23,3 +23,21 @@ spring:
     password: crm_pass
     hikari:
       maximum-pool-size: 10
+
+### MULTIPART (MultipartProperties)
+## Enable multipart uploads
+
+#  servlet:
+#    multipart:
+#      enabled: true
+#      file-size-threshold: 1KB
+#      max-file-size: 100MB
+  ## Threshold after which files are written to disk.
+  ## Max file size.
+  ## Max Request Size
+  #spring.servlet.multipart.max-request-size=215MB
+  #
+  ### File Storage Properties
+  ## All files uploaded through the REST API will be stored in this directory
+  #file.upload-dir=./uploads
+#  images.upload.folder=C://cooperativeFiles//images//
