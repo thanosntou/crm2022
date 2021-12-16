@@ -39,12 +39,18 @@ public class ContactController {
   }
 
   @PostMapping(
-      value = "/file")
+      value = "/import")
   @PreAuthorize(ADMIN_OR_ROOT)
   public List<Contact> createContactsFromFile(
       @RequestParam(name = "file") MultipartFile file,
       @RequestParam(name = "id", required = false) Long id) {
     return contactService.createMultiple(file);
+  }
+
+  @GetMapping("/export")
+  @PreAuthorize(ADMIN_OR_ROOT)
+  public void exportContacts() {
+    contactService.exportContacts();
   }
 
   @GetMapping
