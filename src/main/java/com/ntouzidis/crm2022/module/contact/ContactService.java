@@ -2,10 +2,13 @@ package com.ntouzidis.crm2022.module.contact;
 
 import com.ntouzidis.crm2022.module.common.enumeration.BusinessType;
 import com.ntouzidis.crm2022.module.common.exceptions.NotFoundException;
-import com.ntouzidis.crm2022.module.contact.utils.ExcelHelper;
+import com.ntouzidis.crm2022.module.contact.utils.ExcelGenerator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.util.Optional.ofNullable;
 
 @Service
 @Slf4j
@@ -30,40 +36,39 @@ public class ContactService {
   public List<Contact> createMultiple(@NonNull MultipartFile file) {
     String fileName = Objects.requireNonNull(file.getOriginalFilename());
 
-    if (!ExcelHelper.isXlsx(fileName)) {
+    if (!ExcelGenerator.isXlsx(fileName)) {
       throw new RuntimeException("Only [.xlsx] file type is supported now");
     }
-    var sheet = ExcelHelper.getFirstSheet(file);
+    var sheet = ExcelGenerator.getFirstSheet(file);
 
     var contacts =
-        ExcelHelper.getContactRows(sheet).stream()
+        ExcelGenerator.getContactRows(sheet).stream()
             .map(
                 row -> {
-                  var listOfValues = ExcelHelper.getContactRowValues(row);
+                  var listOfValues = ExcelGenerator.getContactRowValues(row);
                   return Contact.create(
-                      (String) listOfValues.get(0),
-                      (String) listOfValues.get(1),
-                      (String) listOfValues.get(2),
-                      (String) listOfValues.get(3),
-                      (String) listOfValues.get(4),
-                      (String) listOfValues.get(5),
-                      (Long) listOfValues.get(6),
-                      (Long) listOfValues.get(7),
-                      (String) listOfValues.get(8),
-                      (String) listOfValues.get(9),
-                      (String) listOfValues.get(10),
-                      (String) listOfValues.get(11));
+                      listOfValues.get(0),
+                      listOfValues.get(1),
+                      listOfValues.get(2),
+                      listOfValues.get(3),
+                      listOfValues.get(4),
+                      listOfValues.get(5),
+                      Long.valueOf(listOfValues.get(6)),
+                      Long.valueOf(listOfValues.get(7)),
+                      listOfValues.get(8),
+                      listOfValues.get(9),
+                      listOfValues.get(10),
+                      listOfValues.get(11));
                 })
             .toList();
-
     contacts.forEach(contactRepository::saveNew);
-
     return contacts;
   }
 
   public void exportContacts() {
+    var contacts = contactRepository.getAll();
 
-
+    ExcelGenerator.generate(contacts);
   }
 
   @Transactional(readOnly = true)
