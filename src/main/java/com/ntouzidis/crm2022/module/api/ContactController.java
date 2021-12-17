@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -57,12 +58,18 @@ public class ContactController {
     contactService.exportContacts();
   }
 
-  @GetMapping("/export")
+  @PostMapping("/download")
   @PreAuthorize(ADMIN_OR_ROOT)
-  public ResponseEntity<Resource> getXlsxFile() throws FileNotFoundException {
+  public ResponseEntity<Resource> downloadXlsxFile() throws FileNotFoundException {
+    String filename = "temp.xlsx";
     File uploadedFile = new File("temp.xlsx");
     InputStreamResource resource = new InputStreamResource(new FileInputStream(uploadedFile));
+
+//    response.setHeader(
+//        HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + fileInfo.getFilename() + "\"");
+
     return ResponseEntity.ok()
+        .header(HttpHeaders.CONTENT_DISPOSITION,  "attachment;filename=\"" + filename + "\"")
         .contentLength(uploadedFile.length())
         .contentType(MediaType.APPLICATION_OCTET_STREAM)
         .body(resource);
