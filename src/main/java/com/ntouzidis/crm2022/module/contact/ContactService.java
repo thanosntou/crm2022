@@ -2,30 +2,36 @@ package com.ntouzidis.crm2022.module.contact;
 
 import com.ntouzidis.crm2022.module.common.enumeration.BusinessType;
 import com.ntouzidis.crm2022.module.common.exceptions.NotFoundException;
-import com.ntouzidis.crm2022.module.contact.utils.ExcelGenerator;
+import com.ntouzidis.crm2022.module.common.pojo.Context;
+import com.ntouzidis.crm2022.module.contact.utils.ExcelUtils;
+import com.ntouzidis.crm2022.module.exportfile.ExportService;
+import com.ntouzidis.crm2022.module.importfile.ImportService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.util.Optional.ofNullable;
 
 @Service
 @Slf4j
 @AllArgsConstructor
 public class ContactService {
 
+  private final Context context;
+
   private final ContactRepository contactRepository;
+
+  private final ImportService importService;
+
+  private final ExportService exportService;
 
   @Transactional
   public Contact createOne(@NonNull ContactForm form) {
@@ -33,19 +39,20 @@ public class ContactService {
   }
 
   @Transactional
-  public List<Contact> createMultiple(@NonNull MultipartFile file) {
+  public List<Contact> importFromFile(@NonNull MultipartFile file) {
     String fileName = Objects.requireNonNull(file.getOriginalFilename());
 
-    if (!ExcelGenerator.isXlsx(fileName)) {
+    if (!ExcelUtils.isXlsx(fileName)) {
       throw new RuntimeException("Only [.xlsx] file type is supported now");
     }
-    var sheet = ExcelGenerator.getFirstSheet(file);
+    var workbook = ExcelUtils.toWorkbook(file);
+    var sheet = ExcelUtils.getFirstSheet(workbook);
 
     var contacts =
-        ExcelGenerator.getContactRows(sheet).stream()
+        ExcelUtils.getContactRows(sheet).stream()
             .map(
                 row -> {
-                  var listOfValues = ExcelGenerator.getContactRowValues(row);
+                  var listOfValues = ExcelUtils.getContactRowValues(row);
                   return Contact.create(
                       listOfValues.get(0),
                       listOfValues.get(1),
@@ -61,14 +68,41 @@ public class ContactService {
                       listOfValues.get(11));
                 })
             .toList();
+
     contacts.forEach(contactRepository::saveNew);
+
+    try {
+      importService.createOne(context.getUser().getUsername(), file.getBytes(), contacts.size());
+
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to get the bytes from MultipartFile");
+    }
     return contacts;
   }
 
-  public void exportContacts() {
+  @Transactional
+  public void exportAndSendToEmail() {
     var contacts = contactRepository.getAll();
+    var file = ExcelUtils.generateFile(contacts);
+    try {
+      exportService.createOne(
+          context.getUser().getUsername(), Files.readAllBytes(file.toPath()), contacts.size());
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to get the bytes from exported file");
+    }
+  }
 
-    ExcelGenerator.generate(contacts);
+  @Transactional
+  public File exportAndDownload() {
+    var contacts = contactRepository.getAll();
+    var file = ExcelUtils.generateFile(contacts);
+    try {
+      exportService.createOne(
+          context.getUser().getUsername(), Files.readAllBytes(file.toPath()), contacts.size());
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to get the bytes from exported file");
+    }
+    return file;
   }
 
   @Transactional(readOnly = true)
