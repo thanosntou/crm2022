@@ -10,6 +10,8 @@ public final class ControllerPaths {
 
   public static final String DASHBOARD_CONTROLLER_PATH = "/api/v1/dashboard";
 
+  public static final String EMAIL_CONTROLLER_PATH = "/api/v1/email";
+
   public static final String EXPORT_CONTROLLER_PATH = "/api/v1/export";
 
   public static final String CONTACT_CONTROLLER_PATH = "/api/v1/contact";

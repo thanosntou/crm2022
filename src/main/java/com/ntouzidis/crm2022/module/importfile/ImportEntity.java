@@ -30,7 +30,7 @@ public class ImportEntity implements Serializable {
   private String createdBy;
 
   @Lob
-  @Column(name = "file", columnDefinition = "BLOB")
+  @Column(name = "file", columnDefinition = "OID")
   private byte[] file;
 
   @Column(name = "imported_count")

@@ -30,7 +30,7 @@ public class ExportEntity implements Serializable {
   private String createdBy;
 
   @Lob
-  @Column(name = "file", columnDefinition = "BLOB")
+  @Column(name = "file", columnDefinition = "OID")
   private byte[] file;
 
   @Column(name = "exported_count")

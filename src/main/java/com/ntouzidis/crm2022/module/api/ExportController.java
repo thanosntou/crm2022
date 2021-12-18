@@ -4,7 +4,7 @@ import com.ntouzidis.crm2022.module.contact.ContactService;
 import com.ntouzidis.crm2022.module.contact.enums.ExportType;
 import com.ntouzidis.crm2022.module.exportfile.Export;
 import com.ntouzidis.crm2022.module.exportfile.ExportService;
-import com.ntouzidis.crm2022.module.importfile.ExportResource;
+import com.ntouzidis.crm2022.module.exportfile.ExportResource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
