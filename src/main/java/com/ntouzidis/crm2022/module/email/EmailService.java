@@ -36,8 +36,7 @@ public class EmailService {
 
     contacts.forEach(
         recipient -> {
-          SimpleMailMessage message = new SimpleMailMessage();
-          message.setFrom("thanosntouzidis@gmail.com");
+          var message = new SimpleMailMessage();
           message.setTo("thanos_nt@yahoo.gr"); // todo the contacts don't have email now
           message.setSubject(form.subject());
           message.setText(form.content());
