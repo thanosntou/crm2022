@@ -5,12 +5,9 @@ import com.ntouzidis.crm2022.module.contact.Contact;
 import com.ntouzidis.crm2022.module.contact.ContactForm;
 import com.ntouzidis.crm2022.module.contact.ContactService;
 import com.ntouzidis.crm2022.module.contact.Country;
+import com.ntouzidis.crm2022.module.contact.enums.ExportType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -21,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.*;
-import java.util.Iterator;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import static com.ntouzidis.crm2022.module.common.constants.AuthorizationConstants.ADMIN_OR_ROOT;
@@ -43,36 +40,35 @@ public class ContactController {
     return contactService.createOne(form);
   }
 
-  @PostMapping(
-      value = "/import")
+  @PostMapping(value = "/import")
   @PreAuthorize(ADMIN_OR_ROOT)
   public List<Contact> createContactsFromFile(
       @RequestParam(name = "file") MultipartFile file,
       @RequestParam(name = "id", required = false) Long id) {
-    return contactService.createMultiple(file);
+    return contactService.importFromFile(file);
   }
 
-  @PostMapping("/export")
+  @GetMapping("/export")
   @PreAuthorize(ADMIN_OR_ROOT)
-  public void exportContacts() {
-    contactService.exportContacts();
-  }
+  public ResponseEntity<Resource> exportFile(@RequestParam ExportType type)
+      throws FileNotFoundException {
 
-  @PostMapping("/download")
-  @PreAuthorize(ADMIN_OR_ROOT)
-  public ResponseEntity<Resource> downloadXlsxFile() throws FileNotFoundException {
-    String filename = "temp.xlsx";
-    File uploadedFile = new File("temp.xlsx");
-    InputStreamResource resource = new InputStreamResource(new FileInputStream(uploadedFile));
+    if (type == ExportType.EMAIL) {
+      contactService.exportAndSendToEmail();
+      return ResponseEntity.ok().build();
 
-//    response.setHeader(
-//        HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + fileInfo.getFilename() + "\"");
+    } else if (type == ExportType.DOWNLOAD) {
+      var file = contactService.exportAndDownload();
+      return ResponseEntity.ok()
+          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getName() + "\"")
+          .contentType(MediaType.APPLICATION_OCTET_STREAM)
+          .contentLength(file.length())
+          .body(new InputStreamResource(new FileInputStream(file)));
 
-    return ResponseEntity.ok()
-        .header(HttpHeaders.CONTENT_DISPOSITION,  "attachment;filename=\"" + filename + "\"")
-        .contentLength(uploadedFile.length())
-        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-        .body(resource);
+    } else {
+      throw new UnsupportedOperationException(
+          String.format("Export type [%s] is not supported", type));
+    }
   }
 
   @GetMapping

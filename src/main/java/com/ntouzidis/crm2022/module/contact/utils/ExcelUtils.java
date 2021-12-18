@@ -9,10 +9,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -23,21 +20,22 @@ import java.util.stream.StreamSupport;
 import static java.util.Optional.ofNullable;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ExcelGenerator {
+public class ExcelUtils {
 
   public static final String ARIAL = "Arial";
   public static final int HEADER_CELL_FONT_SIZE = 11;
   public static final int CONTACT_CELL_FONT_SIZE = 10;
+  public static final String FILE_NAME = "temp.xlsx";
   private static CellStyle headerStyle;
   private static CellStyle contactStyle;
 
-  public static void generate(List<Contact> contacts) {
+  public static File generateFile(List<Contact> contacts) {
     // Create workbook
     var workbook = new XSSFWorkbook();
     // Create sheet
-    var sheet = ExcelGenerator.createSheet(workbook);
+    var sheet = ExcelUtils.createSheet(workbook);
     // Create header row
-    ExcelGenerator.createHeader(sheet);
+    ExcelUtils.createHeader(sheet);
 
     // Create contacts rows and cells
     var rowIndex = new AtomicInteger(1);
@@ -74,7 +72,7 @@ public class ExcelGenerator {
           cellIndex.set(0);
         });
 
-    ExcelGenerator.generateXlsxFile(workbook);
+    return ExcelUtils.generateXlsxFile(workbook);
   }
 
   // Read operations
@@ -82,15 +80,28 @@ public class ExcelGenerator {
     return fileName.endsWith(".xlsx");
   }
 
-  public static Sheet getFirstSheet(MultipartFile file) {
+  public static Workbook toWorkbook(MultipartFile file) {
     try (InputStream excelIs = file.getInputStream()) {
       try (Workbook wb = WorkbookFactory.create(excelIs)) {
-        return wb.getSheetAt(0);
+        return wb;
       }
     } catch (IOException e) {
       e.printStackTrace();
-      throw new RuntimeException();
+      throw new RuntimeException("Failed to convert MultipartFile to workbook", e);
     }
+  }
+
+  public static Workbook toWorkbook(byte[] bytes) {
+    try (Workbook workbook = WorkbookFactory.create(new ByteArrayInputStream(bytes))) {
+      return workbook;
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new RuntimeException("Failed to convert bytes to workbook", e);
+    }
+  }
+
+  public static Sheet getFirstSheet(Workbook workbook) {
+    return workbook.getSheetAt(0);
   }
 
   public static List<Row> getContactRows(Sheet sheet) {
@@ -111,7 +122,10 @@ public class ExcelGenerator {
         row.getCell(3).getStringCellValue(),
         row.getCell(4).getStringCellValue(),
         row.getCell(5).getStringCellValue(),
-        String.valueOf(Double.valueOf(row.getCell(6).getNumericCellValue()).longValue()),
+        String.valueOf(
+            Double.valueOf(row.getCell(6).getNumericCellValue())
+                .longValue()), // this was needed to copy properly the number, else iit got
+                               // 6.955555555E
         String.valueOf(Double.valueOf(row.getCell(7).getNumericCellValue()).longValue()),
         row.getCell(8).getStringCellValue(),
         row.getCell(9).getStringCellValue(),
@@ -152,10 +166,10 @@ public class ExcelGenerator {
     cell11.setCellStyle(style);
   }
 
-  public static void generateXlsxFile(Workbook workbook) {
+  public static File generateXlsxFile(Workbook workbook) {
     var currDir = new File(".");
     String path = currDir.getAbsolutePath();
-    String fileLocation = path.substring(0, path.length() - 1) + "temp.xlsx";
+    String fileLocation = path.substring(0, path.length() - 1) + FILE_NAME;
 
     FileOutputStream outputStream;
     try {
@@ -163,8 +177,9 @@ public class ExcelGenerator {
       workbook.write(outputStream);
       workbook.close();
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException("Failed to generate xslx file", e);
     }
+    return new File(fileLocation);
   }
 
   public static void createHeaderStyle(Workbook workbook) {
