@@ -4,6 +4,7 @@ CREATE TABLE contact (
     name text,
     surname text,
     website text,
+    email text NOT NULL,
     country text NOT NULL,
     skype text,
     viber bigint,

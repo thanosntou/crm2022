@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.util.Optional;
 
@@ -31,6 +32,10 @@ public class ContactEntity implements Serializable {
 
   @Column(name = "website")
   private String website;
+
+  @Email
+  @Column(name = "email")
+  private String email;
 
   @Column(name = "country")
   private String country;
@@ -63,8 +68,9 @@ public class ContactEntity implements Serializable {
         this.company,
         this.name,
         this.surname,
-        StringUtils.isNotBlank(this.country) ? Country.fromName(this.country) : null,
         this.website,
+        this.email,
+        StringUtils.isNotBlank(this.country) ? Country.fromName(this.country) : null,
         this.skype,
         this.viber,
         this.whatsApp,
@@ -80,6 +86,7 @@ public class ContactEntity implements Serializable {
     entity.name = contact.name();
     entity.surname = contact.surname();
     entity.website = contact.website();
+    entity.email = contact.email();
     entity.country = Optional.ofNullable(contact.country()).map(Country::getName).orElse(null);
     entity.skype = contact.skype();
     entity.viber = contact.viber();

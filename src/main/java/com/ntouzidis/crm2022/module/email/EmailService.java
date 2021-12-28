@@ -37,13 +37,13 @@ public class EmailService {
             .toList();
 
     contacts.forEach(
-        recipient -> {
+        contact -> {
           var message = new SimpleMailMessage();
-          message.setTo("thanos_nt@yahoo.gr"); // todo the contacts don't have email now
+          message.setTo(contact.email());
           message.setSubject(form.subject());
           message.setText(form.content());
           emailSender.send(message);
-          emailRepository.saveNew(newEventId, recipient.id(), form.subject(), form.content());
+          emailRepository.saveNew(newEventId, contact.id(), form.subject(), form.content());
         });
   }
 

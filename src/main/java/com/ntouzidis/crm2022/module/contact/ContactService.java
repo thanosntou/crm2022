@@ -55,12 +55,13 @@ public class ContactService {
                       listOfValues.get(3),
                       listOfValues.get(4),
                       listOfValues.get(5),
-                      Long.valueOf(listOfValues.get(6)),
+                      listOfValues.get(6),
                       Long.valueOf(listOfValues.get(7)),
-                      listOfValues.get(8),
+                      Long.valueOf(listOfValues.get(8)),
                       listOfValues.get(9),
                       listOfValues.get(10),
-                      listOfValues.get(11));
+                      listOfValues.get(11),
+                      listOfValues.get(12));
                 })
             .toList();
 

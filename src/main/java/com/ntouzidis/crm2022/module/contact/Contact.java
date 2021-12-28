@@ -5,7 +5,7 @@ import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 public record Contact(Long id, String company, String name, String surname,
-                      Country country, String website, String skype,
+                      String website, String email, Country country, String skype,
                       Long viber, Long whatsApp, String weChat,
                       String linkedIn, BusinessType businessType, String comments) {
 
@@ -15,8 +15,9 @@ public record Contact(Long id, String company, String name, String surname,
         form.company(),
         form.name(),
         form.surname(),
-        StringUtils.isNotBlank(form.country()) ? Country.fromCode(form.country()) : null,
         form.website(),
+        form.email(),
+        StringUtils.isNotBlank(form.country()) ? Country.fromCode(form.country()) : null,
         form.skype(),
         form.viber(),
         form.whatsApp(),
@@ -26,7 +27,7 @@ public record Contact(Long id, String company, String name, String surname,
         form.comments());
   }
 
-  public static Contact create(@NonNull String company, String name, String surname, String website,
+  public static Contact create(@NonNull String company, String name, String surname, String website, String email,
                                @NonNull String country, String skype, Long viber, Long whatsApp, String weChat,
                                String linkedIn, @NonNull String businessType, String comments) {
     return  new Contact(
@@ -34,8 +35,9 @@ public record Contact(Long id, String company, String name, String surname,
         company,
         name,
         surname,
-        StringUtils.isNotBlank(country) ? Country.fromName(country) : null,
         website,
+        email,
+        StringUtils.isNotBlank(country) ? Country.fromName(country) : null,
         skype,
         viber,
         whatsApp,
