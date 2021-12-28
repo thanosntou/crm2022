@@ -4,7 +4,6 @@ import com.ntouzidis.crm2022.module.common.enumeration.BusinessType;
 import com.ntouzidis.crm2022.module.common.exceptions.NotFoundException;
 import com.ntouzidis.crm2022.module.common.pojo.Context;
 import com.ntouzidis.crm2022.module.contact.utils.ExcelUtils;
-import com.ntouzidis.crm2022.module.exportfile.ExportService;
 import com.ntouzidis.crm2022.module.importfile.ImportService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -13,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -30,8 +27,6 @@ public class ContactService {
   private final ContactRepository contactRepository;
 
   private final ImportService importService;
-
-  private final ExportService exportService;
 
   @Transactional
   public Contact createOne(@NonNull ContactForm form) {
@@ -78,31 +73,6 @@ public class ContactService {
       throw new RuntimeException("Failed to get the bytes from MultipartFile");
     }
     return contacts;
-  }
-
-  @Transactional
-  public void exportAndSendToEmail() {
-    var contacts = contactRepository.getAll();
-    var file = ExcelUtils.generateFile(contacts);
-    try {
-      exportService.createOne(
-          context.getUser().getUsername(), Files.readAllBytes(file.toPath()), contacts.size());
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to get the bytes from exported file");
-    }
-  }
-
-  @Transactional
-  public File exportAndDownload() {
-    var contacts = contactRepository.getAll();
-    var file = ExcelUtils.generateFile(contacts);
-    try {
-      exportService.createOne(
-          context.getUser().getUsername(), Files.readAllBytes(file.toPath()), contacts.size());
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to get the bytes from exported file");
-    }
-    return file;
   }
 
   @Transactional(readOnly = true)
