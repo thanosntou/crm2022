@@ -25,7 +25,7 @@ public class ExcelUtils {
   public static final String ARIAL = "Arial";
   public static final int HEADER_CELL_FONT_SIZE = 11;
   public static final int CONTACT_CELL_FONT_SIZE = 10;
-  public static final String FILE_NAME = "temp.xlsx";
+  public static final String FILE_NAME = "Contacts_Export.xlsx";
   private static CellStyle headerStyle;
   private static CellStyle contactStyle;
 
@@ -72,7 +72,7 @@ public class ExcelUtils {
           cellIndex.set(0);
         });
 
-    return ExcelUtils.generateXlsxFile(workbook);
+    return generateXlsxFile(workbook);
   }
 
   // Read operations
@@ -86,7 +86,6 @@ public class ExcelUtils {
         return wb;
       }
     } catch (IOException e) {
-      e.printStackTrace();
       throw new RuntimeException("Failed to convert MultipartFile to workbook", e);
     }
   }
@@ -95,9 +94,24 @@ public class ExcelUtils {
     try (Workbook workbook = WorkbookFactory.create(new ByteArrayInputStream(bytes))) {
       return workbook;
     } catch (IOException e) {
-      e.printStackTrace();
       throw new RuntimeException("Failed to convert bytes to workbook", e);
     }
+  }
+
+  public static byte[] toBytes(Workbook workbook) {
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    try {
+      workbook.write(bos);
+    } catch(Exception e) {
+      throw new RuntimeException("Failed to convert bytes to workbook", e);
+    } finally {
+      try {
+        bos.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return bos.toByteArray();
   }
 
   public static Sheet getFirstSheet(Workbook workbook) {
