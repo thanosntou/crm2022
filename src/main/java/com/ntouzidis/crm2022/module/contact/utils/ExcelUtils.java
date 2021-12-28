@@ -136,15 +136,16 @@ public class ExcelUtils {
         row.getCell(3).getStringCellValue(),
         row.getCell(4).getStringCellValue(),
         row.getCell(5).getStringCellValue(),
+        row.getCell(6).getStringCellValue(),
         String.valueOf(
-            Double.valueOf(row.getCell(6).getNumericCellValue())
+            Double.valueOf(row.getCell(7).getNumericCellValue())
                 .longValue()), // this was needed to copy properly the number, else iit got
                                // 6.955555555E
-        String.valueOf(Double.valueOf(row.getCell(7).getNumericCellValue()).longValue()),
-        row.getCell(8).getStringCellValue(),
+        String.valueOf(Double.valueOf(row.getCell(8).getNumericCellValue()).longValue()),
         row.getCell(9).getStringCellValue(),
         row.getCell(10).getStringCellValue(),
-        row.getCell(11).getStringCellValue());
+        row.getCell(11).getStringCellValue(),
+        row.getCell(12).getStringCellValue());
   }
 
   // Write operations
