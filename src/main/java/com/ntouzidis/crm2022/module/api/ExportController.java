@@ -31,19 +31,17 @@ public class ExportController {
 
   private final ExportService exportService;
 
-  private final ContactService contactService;
-
   @PostMapping
   @PreAuthorize(ADMIN_OR_ROOT)
   public ResponseEntity<Resource> exportFile(@RequestParam ExportType type)
       throws FileNotFoundException {
 
     if (type == ExportType.EMAIL) {
-      contactService.exportAndSendToEmail();
+      exportService.exportAndSendToEmail();
       return ResponseEntity.ok().build();
 
     } else if (type == ExportType.DOWNLOAD) {
-      var file = contactService.exportAndDownload();
+      var file = exportService.exportAndDownload();
       return ResponseEntity.ok()
           .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getName() + "\"")
           .contentType(MediaType.APPLICATION_OCTET_STREAM)
