@@ -24,18 +24,6 @@ spring:
     hikari:
       maximum-pool-size: 10
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: thanosntouzidis@gmail.com
-    password: ygpjsgmelniqmymu
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
 ### MULTIPART (MultipartProperties)
 ## Enable multipart uploads
 
