@@ -42,6 +42,9 @@ public class User implements Serializable {
   @Column(name = "email")
   private String email;
 
+  @Column(name = "email_pass")
+  private String emailPass;
+
   @Column(name = "enabled")
   private Boolean enabled;
 
@@ -121,6 +124,10 @@ public class User implements Serializable {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public void setEmailPass(String emailPass) {
+    this.emailPass = emailPass;
   }
 
   public Boolean getEnabled() {
