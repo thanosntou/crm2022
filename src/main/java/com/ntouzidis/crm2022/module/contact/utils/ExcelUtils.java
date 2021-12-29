@@ -44,31 +44,24 @@ public class ExcelUtils {
     contacts.forEach(
         contact -> {
           var contactRow = sheet.createRow(rowIndex.getAndIncrement());
+
           createCell(contactRow, cellIndex.getAndIncrement(), contact.company(), contactStyle);
           createCell(contactRow, cellIndex.getAndIncrement(), contact.name(), contactStyle);
           createCell(contactRow, cellIndex.getAndIncrement(), contact.surname(), contactStyle);
           createCell(contactRow, cellIndex.getAndIncrement(), contact.website(), contactStyle);
-          createCell(
-              contactRow,
-              cellIndex.getAndIncrement(),
-              ofNullable(contact.country()).map(Country::getName).orElse(null),
-              contactStyle);
+          createCell(contactRow, cellIndex.getAndIncrement(), contact.email(), contactStyle);
+          var country = ofNullable(contact.country()).map(Country::getName).orElse(null);
+          createCell(contactRow, cellIndex.getAndIncrement(), country, contactStyle);
           createCell(contactRow, cellIndex.getAndIncrement(), contact.skype(), contactStyle);
-          createCell(
-              contactRow,
-              cellIndex.getAndIncrement(),
-              ofNullable(contact.viber()).map(Object::toString).orElse(null),
-              contactStyle);
-          createCell(
-              contactRow,
-              cellIndex.getAndIncrement(),
-              ofNullable(contact.whatsApp()).map(Object::toString).orElse(null),
-              contactStyle);
+          var viber = ofNullable(contact.viber()).map(Object::toString).orElse(null);
+          createCell(contactRow, cellIndex.getAndIncrement(), viber, contactStyle);
+          var whatsapp = ofNullable(contact.whatsApp()).map(Object::toString).orElse(null);
+          createCell(contactRow, cellIndex.getAndIncrement(), whatsapp, contactStyle);
           createCell(contactRow, cellIndex.getAndIncrement(), contact.weChat(), contactStyle);
           createCell(contactRow, cellIndex.getAndIncrement(), contact.linkedIn(), contactStyle);
-          createCell(
-              contactRow, cellIndex.getAndIncrement(), contact.businessType().name(), contactStyle);
+          createCell(contactRow, cellIndex.getAndIncrement(), contact.businessType().name(), contactStyle);
           createCell(contactRow, cellIndex.getAndIncrement(), contact.comments(), contactStyle);
+
           cellIndex.set(0);
         });
 
@@ -102,7 +95,7 @@ public class ExcelUtils {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try {
       workbook.write(bos);
-    } catch(Exception e) {
+    } catch (Exception e) {
       throw new RuntimeException("Failed to convert bytes to workbook", e);
     } finally {
       try {
@@ -140,7 +133,7 @@ public class ExcelUtils {
         String.valueOf(
             Double.valueOf(row.getCell(7).getNumericCellValue())
                 .longValue()), // this was needed to copy properly the number, else iit got
-                               // 6.955555555E
+        // 6.955555555E
         String.valueOf(Double.valueOf(row.getCell(8).getNumericCellValue()).longValue()),
         row.getCell(9).getStringCellValue(),
         row.getCell(10).getStringCellValue(),

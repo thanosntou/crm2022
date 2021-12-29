@@ -5,6 +5,7 @@ import com.ntouzidis.crm2022.module.common.pojo.Context;
 import com.ntouzidis.crm2022.module.contact.ContactRepository;
 import com.ntouzidis.crm2022.module.contact.utils.ExcelUtils;
 import com.ntouzidis.crm2022.module.email.EmailService;
+import com.ntouzidis.crm2022.module.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static com.ntouzidis.crm2022.module.common.constants.MessagesConstants.USER_NOT_FOUND;
+import static java.lang.String.format;
 
 @Service
 @Slf4j
@@ -31,19 +35,30 @@ public class ExportService {
 
   private final ContactRepository contactRepository;
 
+  private final UserRepository userRepository;
+
   @Transactional
   public void exportAndSendToEmail() {
     var contacts = contactRepository.getAll();
     var file = ExcelUtils.generateFile(contacts);
     try {
       byte[] fileBytes = Files.readAllBytes(file.toPath());
+      var user =
+          userRepository
+              .findOne(context.getUserID())
+              .orElseThrow(
+                  () ->
+                      new NotFoundException(format(USER_NOT_FOUND, context.getUser().getUsername())));
+
       emailService.send(
-          "thanosntouzidis@gmail.com",
-          "thanos_nt@yahoo.gr",
+          user.getEmail(),
+          user.getEmailPass(),
+          user.getEmail(),
           "Your Contacts",
           "An excel file with all the contacts is attached.",
           ExcelUtils.FILE_NAME,
           fileBytes);
+
       createOne(context.getUser().getUsername(), fileBytes, contacts.size());
     } catch (IOException e) {
       throw new RuntimeException("Failed to get the bytes from exported file");

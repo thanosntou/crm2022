@@ -1,5 +1,6 @@
 package com.ntouzidis.crm2022.module.api;
 
+import com.ntouzidis.crm2022.module.common.pojo.Context;
 import com.ntouzidis.crm2022.module.email.Email;
 import com.ntouzidis.crm2022.module.email.EmailForm;
 import com.ntouzidis.crm2022.module.email.EmailService;
@@ -21,12 +22,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class EmailController {
 
+  private final Context context;
+
   private final EmailService emailService;
 
   @PostMapping
   @PreAuthorize(ADMIN_OR_ROOT)
   public void sendAll(@RequestBody @Valid EmailForm form) {
-    emailService.send(form);
+    emailService.send(context.getUser(), form);
   }
 
   @GetMapping
