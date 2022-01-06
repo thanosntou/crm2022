@@ -28,7 +28,6 @@ public class EmailService {
 
   private final ContactRepository contactRepository;
 
-
   public void send(@NonNull User sender, @NonNull EmailForm form) {
     var newEventId = emailRepository.getLatestEventId() + 1;
 
@@ -55,10 +54,10 @@ public class EmailService {
           message.setText(form.content());
           try {
             javaMailSender.send(message);
+            emailRepository.saveNew(newEventId, contact.id(), form.subject(), form.content());
           } catch (MailSendException e) {
             log.error("Failed to send email to [{}]", contact.email(), e);
           }
-          emailRepository.saveNew(newEventId, contact.id(), form.subject(), form.content());
         });
   }
 
@@ -93,8 +92,8 @@ public class EmailService {
     var mailSender = new JavaMailSenderImpl();
     if (from.matches("(.*)gmail(.*)|(.*)GMAIL(.*)")) {
       mailSender.setHost("smtp.gmail.com");
-//    } else if (from.matches("(.*)yahoo(.*)|(.*)YAHOO(.*)")) {
-//      mailSender.setHost("smtp.mail.yahoo.com");
+      //    } else if (from.matches("(.*)yahoo(.*)|(.*)YAHOO(.*)")) {
+      //      mailSender.setHost("smtp.mail.yahoo.com");
     } else {
       throw new UnsupportedOperationException(String.format("Not supported mail host [%s]", from));
     }
