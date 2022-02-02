@@ -35,4 +35,8 @@ public class ContactRepository {
 
     contactJpaRepository.delete(entity);
   }
+
+  public void deleteAll() {
+    contactJpaRepository.deleteAll();
+  }
 }

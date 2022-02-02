@@ -94,6 +94,11 @@ public class ContactService {
     contactRepository.delete(id);
   }
 
+  @Transactional
+  public void deleteAll() {
+    contactRepository.deleteAll();
+  }
+
   public List<Country> getSupportedCountries() {
     return Country.getSupportedCountries();
   }
