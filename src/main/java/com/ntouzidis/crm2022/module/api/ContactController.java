@@ -49,6 +49,12 @@ public class ContactController {
     contactService.delete(id);
   }
 
+  @DeleteMapping()
+  @PreAuthorize(ADMIN_OR_ROOT)
+  public void deleteAllContacts() {
+    contactService.deleteAll();
+  }
+
   @GetMapping("/countries")
   public List<Country> getAllSupportedCountries() {
     return contactService.getSupportedCountries();
