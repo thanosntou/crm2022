@@ -8,4 +8,6 @@ import java.util.List;
 public interface ContactJpaRepository extends JpaRepository<ContactEntity, Long> {
 
   List<ContactEntity> findAllByBusinessType(BusinessType businessType);
+
+  List<ContactEntity> findByCompanyStartsWith(String company);
 }
