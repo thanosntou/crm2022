@@ -1,5 +1,6 @@
 package com.ntouzidis.crm2022.module.contact;
 
+import com.ntouzidis.crm2022.module.common.enumeration.BusinessType;
 import com.ntouzidis.crm2022.module.common.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -16,6 +17,10 @@ public class ContactRepository {
 
   public List<Contact> getAll() {
     return contactJpaRepository.findAll().stream().map(ContactEntity::toDomain).toList();
+  }
+
+  public List<Contact> getAllByBusinessType(BusinessType businessType) {
+    return contactJpaRepository.findAllByBusinessType(businessType).stream().map(ContactEntity::toDomain).toList();
   }
 
   public Optional<Contact> findOne(Long id) {

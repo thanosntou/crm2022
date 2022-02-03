@@ -33,7 +33,7 @@ public class EmailService {
 
     var contacts =
         form.all()
-            ? contactRepository.getAll()
+            ? contactRepository.getAllByBusinessType(form.businessType())
             : form.to().stream()
                 .map(
                     recipientId ->
