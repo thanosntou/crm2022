@@ -8,6 +8,7 @@ import com.ntouzidis.crm2022.module.importfile.ImportService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -79,6 +80,14 @@ public class ContactService {
   @Transactional(readOnly = true)
   public List<Contact> getAll() {
     return contactRepository.getAll();
+  }
+
+  @Transactional(readOnly = true)
+  public List<Contact> search(String company) {
+    if (StringUtils.isBlank(company)) {
+      return contactRepository.getAll();
+    }
+    return contactRepository.search(company);
   }
 
   @Transactional(readOnly = true)

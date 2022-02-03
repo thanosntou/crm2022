@@ -19,6 +19,10 @@ public class ContactRepository {
     return contactJpaRepository.findAll().stream().map(ContactEntity::toDomain).toList();
   }
 
+  public List<Contact> search(String company) {
+    return contactJpaRepository.findByCompanyStartsWith(company).stream().map(ContactEntity::toDomain).toList();
+  }
+
   public List<Contact> getAllByBusinessType(BusinessType businessType) {
     return contactJpaRepository.findAllByBusinessType(businessType).stream().map(ContactEntity::toDomain).toList();
   }

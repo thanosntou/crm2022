@@ -31,6 +31,12 @@ public class ContactController {
     return contactService.createOne(form);
   }
 
+  @GetMapping("/search")
+  @PreAuthorize(ADMIN_OR_ROOT)
+  public List<Contact> search(@RequestParam String company) {
+    return contactService.search(company);
+  }
+
   @GetMapping
   @PreAuthorize(ADMIN_OR_ROOT)
   public List<Contact> getAllContacts() {
