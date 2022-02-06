@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public record Contact(Long id, String company, String name, String surname,
                       String website, String email, Country country, String skype,
-                      Long viber, Long whatsApp, String weChat,
+                      String viber, String whatsApp, String weChat,
                       String linkedIn, BusinessType businessType, String comments) {
 
   public static Contact create(ContactForm form) {
@@ -28,7 +28,7 @@ public record Contact(Long id, String company, String name, String surname,
   }
 
   public static Contact create(@NonNull String company, String name, String surname, String website, String email,
-                               @NonNull String country, String skype, Long viber, Long whatsApp, String weChat,
+                               @NonNull String country, String skype, String viber, String whatsApp, String weChat,
                                String linkedIn, @NonNull String businessType, String comments) {
     return  new Contact(
         null,

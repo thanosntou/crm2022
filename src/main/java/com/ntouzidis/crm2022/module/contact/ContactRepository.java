@@ -4,6 +4,7 @@ import com.ntouzidis.crm2022.module.common.enumeration.BusinessType;
 import com.ntouzidis.crm2022.module.common.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,8 +20,8 @@ public class ContactRepository {
     return contactJpaRepository.findAll().stream().map(ContactEntity::toDomain).toList();
   }
 
-  public List<Contact> search(String company) {
-    return contactJpaRepository.findByCompanyStartsWith(company).stream().map(ContactEntity::toDomain).toList();
+  public List<Contact> search(String value) {
+    return contactJpaRepository.searchByValue(StringUtils.lowerCase(value)).stream().map(ContactEntity::toDomain).toList();
   }
 
   public List<Contact> getAllByBusinessType(BusinessType businessType) {
