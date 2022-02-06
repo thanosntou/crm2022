@@ -44,10 +44,10 @@ public class ContactEntity implements Serializable {
   private String skype;
 
   @Column(name = "viber")
-  private Long viber;
+  private String viber;
 
   @Column(name = "whats_app")
-  private Long whatsApp;
+  private String whatsApp;
 
   @Column(name = "we_chat")
   private String weChat;

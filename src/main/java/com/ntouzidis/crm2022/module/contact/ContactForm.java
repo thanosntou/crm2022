@@ -6,6 +6,6 @@ import javax.validation.constraints.NotNull;
 
 public record ContactForm(@NotNull String company, String name, String surname,
                           String website, String email, @NotNull String country, String skype,
-                          Long viber, Long whatsApp, String weChat,
+                          String viber, String whatsApp, String weChat,
                           String linkedIn, @NotNull BusinessType businessType, String comments) {
 }
