@@ -130,11 +130,8 @@ public class ExcelUtils {
         row.getCell(4).getStringCellValue(),
         row.getCell(5).getStringCellValue(),
         row.getCell(6).getStringCellValue(),
-        String.valueOf(
-            Double.valueOf(row.getCell(7).getNumericCellValue())
-                .longValue()), // this was needed to copy properly the number, else iit got
-        // 6.955555555E
-        String.valueOf(Double.valueOf(row.getCell(8).getNumericCellValue()).longValue()),
+        row.getCell(7).getStringCellValue(),
+        row.getCell(8).getStringCellValue(),
         row.getCell(9).getStringCellValue(),
         row.getCell(10).getStringCellValue(),
         row.getCell(11).getStringCellValue(),
