@@ -97,4 +97,33 @@ public class ContactEntity implements Serializable {
     entity.comments = contact.comments();
     return entity;
   }
+
+  public void update(
+      String company,
+      String name,
+      String surname,
+      String website,
+      String email,
+      String country,
+      String skype,
+      String viber,
+      String whatsApp,
+      String weChat,
+      String linkedIn,
+      BusinessType businessType,
+      String comments) {
+    this.company = company;
+    this.name = name;
+    this.surname = surname;
+    this.website = website;
+    this.email = email;
+    this.country = country;
+    this.skype = skype;
+    this.viber = viber;
+    this.whatsApp = whatsApp;
+    this.weChat = weChat;
+    this.linkedIn = linkedIn;
+    this.businessType = businessType;
+    this.comments = comments;
+  }
 }

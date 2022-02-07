@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -96,6 +97,30 @@ public class ContactService {
         .findOne(id)
         .orElseThrow(
             () -> new NotFoundException(String.format("Contact with id [%d] not found", id)));
+  }
+
+  @Transactional
+  public void updateOne(@NonNull Long id, @NonNull EditContactForm form) {
+    var contact = getOne(id);
+
+    if (form.country() != null) {
+      Country.validateName(form.country());
+    }
+    contactRepository.updateOne(
+        id,
+        Optional.ofNullable(form.company()).orElse(contact.company()),
+        Optional.ofNullable(form.name()).orElse(contact.name()),
+        Optional.ofNullable(form.surname()).orElse(contact.surname()),
+        Optional.ofNullable(form.website()).orElse(contact.website()),
+        Optional.ofNullable(form.email()).orElse(contact.email()),
+        Optional.ofNullable(form.country()).orElse(contact.country().getName()),
+        Optional.ofNullable(form.skype()).orElse(contact.skype()),
+        Optional.ofNullable(form.viber()).orElse(contact.viber()),
+        Optional.ofNullable(form.whatsApp()).orElse(contact.whatsApp()),
+        Optional.ofNullable(form.weChat()).orElse(contact.weChat()),
+        Optional.ofNullable(form.linkedIn()).orElse(contact.linkedIn()),
+        Optional.ofNullable(form.businessType()).orElse(contact.businessType()),
+        Optional.ofNullable(form.comments()).orElse(contact.comments()));
   }
 
   @Transactional

@@ -1,10 +1,7 @@
 package com.ntouzidis.crm2022.module.api;
 
 import com.ntouzidis.crm2022.module.common.enumeration.BusinessType;
-import com.ntouzidis.crm2022.module.contact.Contact;
-import com.ntouzidis.crm2022.module.contact.ContactForm;
-import com.ntouzidis.crm2022.module.contact.ContactService;
-import com.ntouzidis.crm2022.module.contact.Country;
+import com.ntouzidis.crm2022.module.contact.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,6 +44,12 @@ public class ContactController {
   @PreAuthorize(ADMIN_OR_ROOT)
   public Contact getOneContact(@PathVariable Long id) {
     return contactService.getOne(id);
+  }
+
+  @PostMapping("/{id}")
+  @PreAuthorize(ADMIN_OR_ROOT)
+  public void updateOne(@PathVariable Long id, @RequestBody @Valid EditContactForm form ) {
+    contactService.updateOne(id, form);
   }
 
   @DeleteMapping("/{id}")

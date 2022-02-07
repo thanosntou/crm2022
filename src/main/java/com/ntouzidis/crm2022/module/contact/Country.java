@@ -49,4 +49,24 @@ public class Country {
                 new NotFoundException(
                     String.format("Country with name [%s] is not supported", name)));
   }
+
+  public static void validateName(String name) {
+    var countryOpt = getSupportedCountries().stream()
+        .filter(c -> c.getName().equalsIgnoreCase(name))
+        .findFirst();
+    if (countryOpt.isEmpty()) {
+      throw new NotFoundException(
+          String.format("Country with name [%s] is not supported", name));
+    }
+  }
+
+  public static void validateCode(String code) {
+    var countryOpt = getSupportedCountries().stream()
+        .filter(c -> c.getCode().equalsIgnoreCase(code))
+        .findFirst();
+    if (countryOpt.isEmpty()) {
+      throw new NotFoundException(
+          String.format("Country with code [%s] is not supported", code));
+    }
+  }
 }
