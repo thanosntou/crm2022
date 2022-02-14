@@ -145,14 +145,15 @@ public class ExcelUtils {
     sheet.setColumnWidth(1, 4096);
     sheet.setColumnWidth(2, 4096);
     sheet.setColumnWidth(3, 6400);
-    sheet.setColumnWidth(4, 4096);
+    sheet.setColumnWidth(4, 6400);
     sheet.setColumnWidth(5, 4096);
     sheet.setColumnWidth(6, 4096);
     sheet.setColumnWidth(7, 4096);
     sheet.setColumnWidth(8, 4096);
     sheet.setColumnWidth(9, 4096);
     sheet.setColumnWidth(10, 4096);
-    sheet.setColumnWidth(11, 10240);
+    sheet.setColumnWidth(11, 4096);
+    sheet.setColumnWidth(12, 10240);
     return sheet;
   }
 
