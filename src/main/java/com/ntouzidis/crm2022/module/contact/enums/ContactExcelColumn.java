@@ -10,6 +10,7 @@ public enum ContactExcelColumn {
   NAME("Name"),
   SURNAME("Surname"),
   WEBSITE("Website"),
+  EMAIL("Email"),
   COUNTRY("Country"),
   SKYPE("Skype"),
   VIBER("Viber"),
